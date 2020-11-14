@@ -74,9 +74,9 @@ print("Text cleaning finished")
 print("Starting the conversion to audio files")
 
 # ------------------- Converting to voice -------------------
-# for j in range(len(pageNums)-1):
-#     with open("chap"+str(j+1)+"_cleaned.txt", encoding='utf-8', errors='ignore') as file:
-#         myobj = gTTS(text=file.read(), lang=language, slow=False)
-#         myobj.save("chap"+str(j+1)+".mp3")
-#         sleep(1)
-#         print(str(j+1)+" audio file created")
+for j in range(len(pageNums)-1):
+    with open("chap"+str(j+1)+"_cleaned.txt", encoding='utf-8', errors='ignore') as file:
+        myobj = gTTS(text=file.read(), lang=language, slow=False)
+        myobj.save("chap"+str(j+1)+".mp3")
+        sleep(1)
+        print(str(j+1)+" audio file created")
