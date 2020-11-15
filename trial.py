@@ -1,3 +1,5 @@
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 import PyPDF2
 from gtts import gTTS
 from time import sleep
@@ -80,10 +82,38 @@ language = 'en'
 #         print(str(j+1)+" audio file created")
 
 # Prerun code to  clean files
-directory = "./"
-files_in_directory = os.listdir(directory)
-filtered_files = [file for file in files_in_directory if file.endswith(".txt")]
-print(filtered_files)
-for file in filtered_files:
-    path_to_file = os.path.join(directory, file)
-    os.remove(path_to_file)
+# directory = "./"
+# files_in_directory = os.listdir(directory)
+# filtered_files = [file for file in files_in_directory if file.endswith(".txt")]
+# print(filtered_files)
+# for file in filtered_files:
+#     path_to_file = os.path.join(directory, file)
+#     os.remove(path_to_file)
+
+# ---------------------- Code to upload audios to drive ------------------
+
+
+# Below code does the authentication part of the code
+gauth = GoogleAuth()
+
+# Creates local webserver and auto handles authentication.
+gauth.LocalWebserverAuth()
+drive = GoogleDrive(gauth)
+
+
+path = os.path.join(os.getcwd(), "Audios")
+# print(path)
+
+# Creating a folder in drive
+folder = drive.CreateFile(
+    {'title': "The Compound Effect", 'mimeType': 'application/vnd.google-apps.folder'})
+folder.Upload()
+print("Created Folder in drive")
+
+# iterating through all the files of the Audios directory
+for x in os.listdir(path):
+    f = drive.CreateFile({'title': x, 'parents': [{'id': folder.get("id")}]})
+    f.SetContentFile(os.path.join(path, x))
+    f.Upload()
+f = None
+print("Completed Uploading audio files to drive")

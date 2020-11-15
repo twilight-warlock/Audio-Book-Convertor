@@ -3,6 +3,8 @@ from gtts import gTTS
 from time import sleep
 import re
 import os
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 # Prerun code to clear files
 directory = "./"
@@ -91,3 +93,33 @@ for j in range(len(pageNums)-1):
         myobj.save("./Audios/chap"+str(j+1)+".mp3")
         sleep(1)
         print(str(j+1)+" audio file created")
+
+
+# ---------------------- Code to upload audios to drive ------------------
+print("Enter Drive Credentials")
+# Below code does the authentication part of the code
+gauth = GoogleAuth()
+
+# Creates local webserver and auto handles authentication.
+gauth.LocalWebserverAuth()
+drive = GoogleDrive(gauth)
+
+
+path = os.path.join(os.getcwd(), "Audios")
+# print(path)
+
+# Creating a folder in drive
+folder = drive.CreateFile(
+    {'title': "The Compound Effect", 'mimeType': 'application/vnd.google-apps.folder'})
+folder.Upload()
+print("Created Folder in drive")
+
+# iterating through all the files of the Audios directory
+for x in os.listdir(path):
+    f = drive.CreateFile({'title': x, 'parents': [{'id': folder.get("id")}]})
+    f.SetContentFile(os.path.join(path, x))
+    f.Upload()
+f = None
+print("Completed Uploading audio files to drive")
+
+print("\nEnjoy your chapter wise audio book")
