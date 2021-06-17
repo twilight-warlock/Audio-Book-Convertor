@@ -1,0 +1,4 @@
+*.json
+/data/*.txt
+/Audios/*.mp3
+*.zip

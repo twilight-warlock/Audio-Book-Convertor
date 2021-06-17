@@ -10,15 +10,27 @@ import shutil
 pageNums = []
 # ----------------- Cleaning stage -------------------
 
-# Prerun code to clear files
-def cleanUp():
-    directory = "./"
+def deleteFolders(directory,field):
     files_in_directory = os.listdir(directory)
-    filtered_files = [file for file in files_in_directory if file.endswith(".txt")]
+
+    filtered_files = [file for file in files_in_directory if file.endswith(field)]
 
     for file in filtered_files:
         path_to_file = os.path.join(directory, file)
         os.remove(path_to_file)
+    
+    os.removedirs(directory)
+
+# Prerun code to clear files
+def cleanUp():
+    directory = [
+        {"name":"data","fileType":".txt"}, 
+        {"name":"Audios","fileType":".mp3"}, 
+        ]
+
+    for obj in directory:
+        deleteFolders(obj["name"],obj["fileType"])
+
 
 def textScrape():
 
@@ -90,8 +102,8 @@ def textToVoice():
     engine = pyttsx3.init()
     os.mkdir("Audios")
     for j in range(len(pageNums)-1):
-        with open("chap"+str(j+1)+"_cleaned.txt", encoding='utf-8', errors='ignore') as file:
-            engine.save_to_file(file.read(),"./Audios/chap"+str(j+1)+".mp3")
+        with open(os.path.join("data","chap"+str(j+1)+"_cleaned.txt"), encoding='utf-8', errors='ignore') as file:
+            engine.save_to_file(file.read(),os.path.join("Audios","chap"+str(j+1)+".mp3"))
             engine.runAndWait()
             sleep(1)
             print(str(j+1)+" audio file created")
@@ -159,3 +171,11 @@ def main():
 
 main()
 
+# Input
+# Enter number of chapters: 6
+# Chapter 1 starts at : 25
+# Chapter 2 starts at : 43
+# Chapter 3 starts at : 75
+# Chapter 4 starts at : 113
+# Chapter 5 starts at : 139
+# Chapter 6 starts at : 160
